@@ -1,0 +1,29 @@
+first set mvn settings.xml
+ <servers>
+    <server>
+      <id>sonatype-nexus-snapshots</id>
+      <username>mr678</username>
+      <password>****</password>
+    </server>
+    <server>
+      <id>sonatype-nexus-staging</id>
+      <username>mr678</username>
+      <password>****</password>
+    </server>
+  </servers>
+
+
+build and deploy to mvn repostiroy with
+
+mvn clean package javadoc:jar source:jar gpg:sign deploy
+
+check if release is available: https://oss.sonatype.org/content/repositories/snapshots/com/sourcecoding/multitenancy/
+or https://oss.sonatype.org/content/repositories/releases/com/sourcecoding/multitenancy/
+
+mvn release:clean
+mvn release:prepare
+mvn release:perform
+
+freigabe:
+https://oss.sonatype.org/index.html#stagingRepositories
+see https://oss.sonatype.org/index.html#stagingRepositories

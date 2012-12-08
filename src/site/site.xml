@@ -1,0 +1,59 @@
+<project name="Multitenancy 4 JavaEE">
+
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-fluido-skin</artifactId>
+		<version>1.3.0</version>
+	</skin>
+  
+	<custom>
+		<fluidoSkin>
+			<topBarEnabled>true</topBarEnabled>
+			<topBarContainerStyle>width: 90%;</topBarContainerStyle>
+			<sideBarEnabled>true</sideBarEnabled>
+			
+		</fluidoSkin>
+	</custom>
+
+
+	<bannerLeft>
+		<name>Multitenancy 4 JavaEE</name>
+		<src>images/headline.png</src>
+		<href>http://multitenancy.sourcecoding.com/</href>
+	</bannerLeft>
+
+	<body>
+	
+	  <head>
+		  <!-- Google Analytics - Start -->
+		  <script type="text/javascript">
+			  var _gaq = _gaq || [];
+			  _gaq.push(['_setAccount', 'UA-36573439-1']);
+			  _gaq.push(['_trackPageview']);
+
+			  (function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			  })();
+			</script>
+		  <!-- Google Analytics - End -->
+		</head>
+	 
+    
+		<menu name="Documentation">
+      		<item name="Getting Started" href="getting-started.html" />
+      		<item name="Authentication" href="authentication.html" />
+    	</menu>
+       
+        <menu ref="reports"/>
+       
+    </body>
+    
+	<poweredBy>
+	 	<logo name="Maven" href="http://maven.apache.org/"
+      		img="http://maven.apache.org/images/logos/maven-feather.png"/>
+		<logo name="CloudBees" href="http://www.cloudbees.com/"
+			img="http://www.cloudbees.com/sites/default/files/Button-Built-on-CB-1.png"/>
+	</poweredBy>
+</project>

@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
+	<groupId>com.sourcecoding</groupId>
+	<artifactId>multitenancy</artifactId>
+	<version>0.4.2-SNAPSHOT</version>
+
+	<name>Multitenancy 4 JEE</name>
+	<description>
+		Multitenancy will supported in JEE7. Today there's no official support 
+		by the JEE Spec. With Multitenancy4JEE there's a library to enable 
+		multitenancy support to your JEE projects (first version for JBoss AS 7 and Hibernate)
+	</description>
+
+	<distributionManagement>
+
+		<!-- <repository> -->
+		<!-- <id>jboss-releases-repository</id> -->
+		<!-- <name>JBoss Releases Repository</name> -->
+		<!-- <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url> -->
+		<!-- </repository> -->
+		<!-- <site> -->
+		<!-- <id>multitenancy.sourcecoding.com</id> -->
+		<!-- <url>scp://sourcecoding.de/home/cloudbees-ci/multitenancy-website</url> -->
+		<!-- </site> -->
+	</distributionManagement>
+
+
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+
+
+
+	<developers>
+		<developer>
+			<id>mr-678</id>
+			<name>Matthias Reining</name>
+			<roles>
+				<role>Software Developer</role>
+				<role>Architect</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<ciManagement>
+		<system>jenkins</system>
+		<url>https://sourcecoding.ci.cloudbees.com/job/multitenancy/</url>
+	</ciManagement>
+
+	<scm>
+		<connection>scm:svn:https://svn.java.net/svn/public-sourcecoding~scm/multitenancy/trunk</connection>
+		<developerConnection>scm:svn:https://svn.java.net/svn/public-sourcecoding~scm/multitenancy/trunk</developerConnection>
+		<url>https://svn.java.net/svn/public-sourcecoding~scm/</url>
+	</scm>
+
+
+	<properties>
+		<!-- Explicitly declaring the source encoding eliminates the following 
+			message: -->
+		<!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
+			resources, i.e. build is platform dependent! -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Timestamp format for the maven.build.timestamp property -->
+		<!-- You can reference property in pom.xml or filtered resources (must 
+			enable third-party plugin if using Maven < 2.1) -->
+		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
+		<!-- Specify the JBoss AS directory to be the JBOSS_HOME environment variable -->
+		<jboss.home>${env.JBOSS_HOME}</jboss.home>
+
+
+		<compilerVersion>1.7</compilerVersion>
+
+		<version.org.jboss.spec.jboss-javaee-6.0>3.0.1.Final</version.org.jboss.spec.jboss-javaee-6.0>
+		<version.junit>4.10</version.junit>
+		<version.org.jboss.arquillian>1.0.0.Final</version.org.jboss.arquillian>
+
+		<version.arquillian_core>1.0.0.Final</version.arquillian_core>
+
+
+
+		<version.jbossas_7>7.1.1.Final</version.jbossas_7>
+		<version.org.jboss.as.arquillian.container>${version.jbossas_7}</version.org.jboss.as.arquillian.container>
+
+
+
+
+
+		<!-- Am 2012-07-06 existierte bereits jacoco 0.5.8, allerdings funktioniert 
+			dies nicht mit der Arquillian Extension Jacoco. Im Moment ist 0.5.3 und 1.0.0Alpha2 
+			die einzige Kombination die funktioniert (1.0.0Alpha3 existiert bereits, 
+			funktioniert aber nicht) 0.6.0.201210061924 funzt nicht -->
+
+		<!-- check if current version work with arquillian jacoco / version 0.5.3.201107060350 
+			funzt -->
+		<version.jacoco>0.6.0.201210061924</version.jacoco>
+		<!-- <version.jacoco>0.5.3.201107060350</version.jacoco> -->
+		<!-- <version.jacoco>0.6.0.201210061924</version.jacoco> -->
+		<version.org.jboss.as.arquillian.ext.jacoco>1.0.0.Alpha5</version.org.jboss.as.arquillian.ext.jacoco>
+
+
+
+	</properties>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${version.arquillian_core}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-build</artifactId>
+				<version>${version.arquillian_core}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<!-- Define the version of JBoss' Java EE 6 APIs we want to import. Any 
+			dependencies from org.jboss.spec will have their version defined by this 
+			BOM -->
+		<!-- JBoss distributes a complete set of Java EE 6 APIs including a Bill 
+			of Materials (BOM). A BOM specifies the versions of a "stack" (or a collection) 
+			of artifacts. We use this here so that we always get the correct versions 
+			of artifacts. Here we use the jboss-javaee-web-6.0 stack (you can read this 
+			as the JBoss stack of the Java EE Web Profile 6 APIs), and we use version 
+			2.0.0.Beta1 which is the latest release of the stack. You can actually use 
+			this stack with any version of JBoss AS that implements Java EE 6, not just 
+			JBoss AS 7! -->
+		<dependency>
+			<groupId>org.jboss.spec</groupId>
+			<artifactId>jboss-javaee-web-6.0</artifactId>
+			<version>${version.org.jboss.spec.jboss-javaee-6.0}</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- deployed dependencies -->
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.0.1.Final</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- necessary for own Login Module -->
+		<dependency>
+			<groupId>org.picketbox</groupId>
+			<artifactId>picketbox</artifactId>
+			<version>4.0.7.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+
+
+		<!-- TESTING dependecies -->
+
+		<!-- Needed for running tests (you may also use TestNG) -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+	</dependencies>
+
+	<build>
+		<!-- Maven will append the version to the finalName (which is the name 
+			given to the generated war, and hence the context root) -->
+		<finalName>${project.artifactId}</finalName>
+
+		<extensions>
+			<!-- Extension required to deploy a snapshot or a release to the CloudBees 
+				remote maven repository using Webdav -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${compilerVersion}</source>
+					<target>${compilerVersion}</target>
+					<optimize>true</optimize>
+					<compilerVersion>${compilerVersion}</compilerVersion>
+					<fork>true</fork>
+					<argLine>-Xmx512M</argLine>
+					<debug>true</debug>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Specification-Title>${project.name}</Specification-Title>
+							<Specification-Version>${project.version}</Specification-Version>
+							<Implementation-Version>${BUILD_TAG}</Implementation-Version>
+							<buildId>${BUILD_ID}</buildId>
+							<buildNumber>${BUILD_NUMBER}</buildNumber>
+							<buildTag>${BUILD_TAG}</buildTag>
+							<buildUrl>${BUILD_URL}</buildUrl>
+							<executorNumber>${EXECUTOR_NUMBER}</executorNumber>
+							<jenkinsUrl>${JENKINS_URL}</jenkinsUrl>
+							<jobName>${JOB_NAME}</jobName>
+							<svnRevision>${SVN_REVISION}</svnRevision>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+
+
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.jacoco}</version>
+				<executions>
+					<execution>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>1.3</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<inputEncoding>UTF-8</inputEncoding>
+					<outputEncoding>UTF-8</outputEncoding>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+
+		<pluginManagement>
+			<plugins>
+				<!-- see https://bugs.eclipse.org/bugs/show_bug.cgi?id=384629 -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-enforcer-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>enforce</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+
+
+
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<profiles>
+
+		<profile>
+			<id>no-arquillian-tests</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+
+			</dependencies>
+
+			<build>
+				<plugins>
+
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.12</version>
+						<configuration>
+							<!-- mit der Zeile wir keine jacoco.exec erzeugt! -->
+							<!-- <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine> -->
+							<excludes>
+								<exclude>**/*ArqTest.java</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+
+		<profile>
+			<!-- An optional Arquillian testing profile that executes tests in a remote 
+				JBoss AS instance -->
+			<!-- Run with: mvn clean test -Parq-jbossas-remote -->
+			<id>arquillian-jbossas-remote</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.as</groupId>
+					<artifactId>jboss-as-arquillian-container-remote</artifactId>
+					<version>${version.jbossas_7}</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.jboss.arquillian.protocol</groupId>
+					<artifactId>arquillian-protocol-servlet</artifactId>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
+
+		<profile>
+			<id>arquillian-jbossas-managed</id>
+			<dependencies>
+
+				<dependency>
+					<groupId>org.jacoco</groupId>
+					<artifactId>org.jacoco.core</artifactId>
+					<version>${version.jacoco}</version>
+					<scope>provided</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.jboss.as</groupId>
+					<artifactId>jboss-as-arquillian-container-managed</artifactId>
+					<version>${version.jbossas_7}</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.jboss.arquillian.protocol</groupId>
+					<artifactId>arquillian-protocol-servlet</artifactId>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.jboss.arquillian.extension</groupId>
+					<artifactId>arquillian-jacoco</artifactId>
+					<version>${version.org.jboss.as.arquillian.ext.jacoco}</version>
+					<scope>test</scope>
+				</dependency>
+
+			</dependencies>
+
+			<build>
+				<plugins>
+
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.12</version>
+						<configuration>
+							<!-- mit der Zeile wir keine jacoco.exec erzeugt! -->
+							<!-- <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine> -->
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>org.jboss.as</groupId>
+											<artifactId>jboss-as-dist</artifactId>
+											<version>7.1.1.Final</version>
+											<type>zip</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>target</outputDirectory>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+
+	<reporting>
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+					<docletArtifact>
+						<groupId>org.umlgraph</groupId>
+						<artifactId>umlgraph</artifactId>
+						<version>5.6</version>
+					</docletArtifact>
+					<!-- <additionalparam>-views -attributes -qualify -types -visibility</additionalparam> -->
+					<additionalparam>-inferrel -inferdep -quiet -hide java.*
+						-collpackages java.util.* -qualify -postfixpackage
+						-nodefontsize 9
+						-nodefontpackagesize 7</additionalparam>
+					<useStandardDocletOptions>true</useStandardDocletOptions>
+					<outputDirectory>${project.reporting.outputDirectory}/apidocs</outputDirectory>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.7.1</version>
+
+				<configuration>
+					<targetJdk>${compilerVersion}</targetJdk>
+					<formats>
+						<format>xml</format>
+						<format>html</format>
+					</formats>
+					<linkXref>true</linkXref>
+					<minimumTokens>100</minimumTokens>
+					<excludes>
+						<exclude>**/generated/*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.12.4</version>
+				<configuration>
+					<!-- Bei grossen Projekten auf false setzen: -->
+					<showSuccess>true</showSuccess>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report-only</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<findbugsXmlOutput>true</findbugsXmlOutput>
+					<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+					<xmlOutput>true</xmlOutput>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<tags>
+						<tag>fixme</tag>
+						<tag>FixMe</tag>
+						<tag>FIXME</tag>
+						<tag>@todo</tag>
+						<tag>todo</tag>
+						<tag>TODO</tag>
+						<tag>xxx</tag>
+						<tag>@deprecated</tag>
+					</tags>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${version.jacoco}</version>
+			</plugin>
+
+		</plugins>
+	</reporting>
+
+</project>
