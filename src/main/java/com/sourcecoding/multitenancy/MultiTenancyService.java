@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Table;
 import javax.persistence.metamodel.EntityType;
 
 /**
@@ -77,8 +78,10 @@ public class MultiTenancyService {
 					o = c.newInstance();
 					if (o instanceof MultiTenancyEntity) {
 						String tablename = c.getSimpleName();
-						System.out
-								.println("Multitenancy class: " + c.getName());
+						if (c.isAnnotationPresent(Table.class))
+							tablename = c.getAnnotation(Table.class).name();
+						System.out.println("Multitenancy class: " + c.getName()
+								+ " / tablename: " + o);
 						list.add(tablename);
 					}
 					if (o instanceof MultiTenancyUser) {

@@ -18,4 +18,8 @@ public class CRUDTestService {
 		return em.merge(obj);
 	}
 
+	public <T> T read(Class<T> clazz, Object primaryKey) {
+		return em.find(clazz, primaryKey);
+	}
+
 }

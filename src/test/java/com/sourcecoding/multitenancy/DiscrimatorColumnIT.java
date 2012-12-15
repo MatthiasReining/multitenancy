@@ -1,8 +1,11 @@
 package com.sourcecoding.multitenancy;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
@@ -41,6 +44,9 @@ public class DiscrimatorColumnIT {
 	@Inject
 	CRUDTestService crud;
 
+	@PersistenceContext
+	EntityManager em;
+
 	@Test
 	public void persisteMultitenancyObject() throws LoginException {
 		LoginContext loginContext = JBossLoginContextFactory
@@ -54,6 +60,29 @@ public class DiscrimatorColumnIT {
 		System.out.println(sc.getId() + " " + " " + sc.getTest() + " "
 				+ sc.getTenantId());
 
+		// sc = crud.read(SampleConfiguration.class, sc.getId());
+		sc = em.find(SampleConfiguration.class, sc.getId());
+		System.out.println(sc.getId() + " " + " " + sc.getTest() + " "
+				+ sc.getTenantId());
+
+		List<SampleConfiguration> l = em.createQuery(
+				"SELECT sc from SampleConfiguration sc",
+				SampleConfiguration.class).getResultList();
+		for (SampleConfiguration s : l) {
+			System.out.println(s.getId() + " " + " " + s.getTest() + " "
+					+ s.getTenantId());
+		}
+
+		loginContext.logout();
+		loginContext = JBossLoginContextFactory.createLoginContext("COMPANY2",
+				"max", PASSWORD);
+		loginContext.login();
+		l = em.createQuery("SELECT sc from SampleConfiguration sc",
+				SampleConfiguration.class).getResultList();
+		for (SampleConfiguration s : l) {
+			System.out.println(s.getId() + " " + " " + s.getTest() + " "
+					+ s.getTenantId());
+		}
 	}
 
 }

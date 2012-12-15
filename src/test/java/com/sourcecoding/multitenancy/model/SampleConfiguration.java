@@ -1,7 +1,9 @@
 package com.sourcecoding.multitenancy.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
+@Table(name = "SAM_CONF")
 @Entity
 public class SampleConfiguration extends SampleMultiTenancyEntity {
 
