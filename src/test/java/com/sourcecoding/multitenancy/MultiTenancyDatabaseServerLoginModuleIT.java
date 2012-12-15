@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import com.sourcecoding.multitenancy.security.JBossLoginContextFactory;
 
 @RunWith(Arquillian.class)
-public class MultiTenancyDatabaseServerLoginModuleArqTest {
+public class MultiTenancyDatabaseServerLoginModuleIT {
 
 	private static final String USERNAME = "admin";
 	private static final String PASSWORD = "geheim";
@@ -30,8 +30,7 @@ public class MultiTenancyDatabaseServerLoginModuleArqTest {
 	public static JavaArchive createDeployment() {
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class)
 				.addClass(JBossLoginContextFactory.class)
-				.addPackage("com.sourcecoding.multitenancy")
-				.addPackage("com.sourcecoding.multitenancy.model")
+				.addPackages(true, "com.sourcecoding.multitenancy")
 				.addAsResource("META-INF/persistence.xml")
 				.addAsResource("import.sql")
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");

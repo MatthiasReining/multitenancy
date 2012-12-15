@@ -336,23 +336,6 @@
 
 			</dependencies>
 
-			<build>
-				<plugins>
-
-					<plugin>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>2.12</version>
-						<configuration>
-							<!-- mit der Zeile wir keine jacoco.exec erzeugt! -->
-							<!-- <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine> -->
-							<excludes>
-								<exclude>**/*ArqTest.java</exclude>
-							</excludes>
-						</configuration>
-					</plugin>
-
-				</plugins>
-			</build>
 		</profile>
 
 

@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
 
-
 /**
  * @author matthias reining
  */
@@ -34,7 +33,6 @@ public class MultiTenancyHibernateInterceptor extends EmptyInterceptor {
 
 	@Override
 	public String onPrepareStatement(String sql) {
-
 		MultiTenancyService mtService = ManagedObject
 				.ejbLookup(MultiTenancyService.class);
 		MultiTenancyPrincipal mtp = mtService.getPrincipal();
@@ -85,7 +83,7 @@ public class MultiTenancyHibernateInterceptor extends EmptyInterceptor {
 					.getPrincipal().getTenant();
 
 			for (int i = 0; i < propertyNames.length; i++) {
-				if ("tenantid".equals(propertyNames[i])) {
+				if ("tenantid".equalsIgnoreCase(propertyNames[i])) {
 					if (client.equals(currentState[i]))
 						return false;
 					currentState[i] = client;
@@ -103,7 +101,7 @@ public class MultiTenancyHibernateInterceptor extends EmptyInterceptor {
 			String client = ManagedObject.ejbLookup(MultiTenancyService.class)
 					.getPrincipal().getTenant();
 			for (int i = 0; i < propertyNames.length; i++) {
-				if ("tenantid".equals(propertyNames[i])) {
+				if ("tenantid".equalsIgnoreCase(propertyNames[i])) {
 					if (client.equals(state[i]))
 						return false;
 					state[i] = client;

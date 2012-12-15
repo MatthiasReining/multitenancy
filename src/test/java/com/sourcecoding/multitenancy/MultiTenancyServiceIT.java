@@ -25,7 +25,7 @@ import com.sourcecoding.multitenancy.security.CRUDTestService;
 import com.sourcecoding.multitenancy.security.JBossLoginContextFactory;
 
 @RunWith(Arquillian.class)
-public class MultiTenancyServiceArqTest {
+public class MultiTenancyServiceIT {
 	private static final String USERNAME = "admin";
 	private static final String PASSWORD = "geheim";
 	private static final String TENANT = "SAMPLE";
