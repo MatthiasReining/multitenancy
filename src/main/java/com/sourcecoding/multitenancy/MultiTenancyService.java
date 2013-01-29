@@ -19,6 +19,8 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -42,6 +44,9 @@ import javax.persistence.metamodel.EntityType;
 @Startup
 public class MultiTenancyService {
 
+	private static Logger LOG = Logger.getLogger(MultiTenancyService.class
+			.getName());
+
 	@PersistenceContext
 	EntityManager em;
 
@@ -64,7 +69,7 @@ public class MultiTenancyService {
 
 	@PostConstruct
 	public void init() {
-		System.out.println("Initalize Multitenancy entities");
+		LOG.fine("Initalize Multitenancy entities");
 		long time = System.currentTimeMillis();
 
 		List<String> list = new ArrayList<>();
@@ -80,8 +85,9 @@ public class MultiTenancyService {
 						String tablename = c.getSimpleName();
 						if (c.isAnnotationPresent(Table.class))
 							tablename = c.getAnnotation(Table.class).name();
-						System.out.println("Multitenancy class: " + c.getName()
-								+ " / tablename: " + o);
+						LOG.log(Level.FINE,
+								"Multitenancy class: {0} / tablename: {1}",
+								new Object[] { c.getName(), o });
 						list.add(tablename);
 					}
 					if (o instanceof MultiTenancyUser) {
@@ -108,8 +114,8 @@ public class MultiTenancyService {
 					"There has to be an instance of (Abstract)MultiTenancyUserRole and (Abstract)MultTenancyiUserRole");
 
 		multiTenancyObjects = Collections.unmodifiableList(list);
-		System.out.println("dauer: " + (System.currentTimeMillis() - time)
-				+ "ms");
+		LOG.log(Level.FINER, "init period: {0}ms",
+				(System.currentTimeMillis() - time));
 
 	}
 

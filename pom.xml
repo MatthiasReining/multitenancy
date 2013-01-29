@@ -64,9 +64,9 @@
 	</ciManagement>
 
 	<scm>
-		<connection>scm:svn:https://svn.java.net/svn/public-sourcecoding~scm/multitenancy/trunk</connection>
-		<developerConnection>scm:svn:https://svn.java.net/svn/public-sourcecoding~scm/multitenancy/trunk</developerConnection>
-		<url>https://svn.java.net/svn/public-sourcecoding~scm/</url>
+		<connection>scm:git@github.com:mr678/multitenancy.git</connection>
+		<developerConnection>scm:git:git@github.com:mr678/multitenancy.git</developerConnection>
+		<url>scm:git@github.com:mr678/multitenancy.git</url>
 	</scm>
 
 

@@ -16,6 +16,8 @@
 package com.sourcecoding.multitenancy;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +28,9 @@ import org.hibernate.type.Type;
  * @author matthias reining
  */
 public class MultiTenancyHibernateInterceptor extends EmptyInterceptor {
+
+	private static Logger LOG = Logger
+			.getLogger(MultiTenancyHibernateInterceptor.class.getName());
 
 	private static final long serialVersionUID = 1L;
 
@@ -69,7 +74,7 @@ public class MultiTenancyHibernateInterceptor extends EmptyInterceptor {
 			}
 		}
 
-		System.out.println("in meinem Interceptor: " + sql);
+		LOG.log(Level.FINEST, "MultiTenancy SQL: {0}", sql);
 		return sql;
 	}
 
