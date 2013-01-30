@@ -27,3 +27,5 @@ mvn release:perform
 freigabe:
 https://oss.sonatype.org/index.html#stagingRepositories
 see https://oss.sonatype.org/index.html#stagingRepositories
+
+docu: https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide
