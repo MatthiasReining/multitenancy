@@ -16,6 +16,8 @@
 package com.sourcecoding.multitenancy;
 
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
@@ -39,6 +41,9 @@ import javax.naming.NamingException;
  * @author matthias reining
  */
 public final class ManagedObject {
+
+	private static final Logger LOG = Logger.getLogger(ManagedObject.class
+			.getName());
 
 	private ManagedObject() {
 		// Utility class, so hide default constructor.
@@ -84,7 +89,7 @@ public final class ManagedObject {
 	public static <T> T cdiLookup(Class<T> clazz) {
 		BeanManager bm = getBeanManager();
 		String beanName = clazz.getSimpleName();
-		System.out.println("cdiLookup for " + beanName);
+		LOG.log(Level.FINE, "cdiLookup for {0}", beanName);
 		// Set<Bean<?>> beans = bm.getBeans(clazz);
 		Set<Bean<?>> beans = bm.getBeans(clazz, new AnnotationLiteral<Any>() {
 			private static final long serialVersionUID = 1L;
@@ -111,8 +116,7 @@ public final class ManagedObject {
 		bean = beans.iterator().next();
 
 		if (beans.iterator().hasNext()) {
-			System.out
-					.println("WARNING, Qualifiers are at the moment not considered!");
+			LOG.warning("WARNING, Qualifiers are at the moment not considered!");
 		}
 
 		CreationalContext<?> ctx = bm.createCreationalContext(bean);

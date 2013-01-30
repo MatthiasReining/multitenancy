@@ -44,8 +44,8 @@ import javax.persistence.metamodel.EntityType;
 @Startup
 public class MultiTenancyService {
 
-	private static Logger LOG = Logger.getLogger(MultiTenancyService.class
-			.getName());
+	private static final Logger LOG = Logger
+			.getLogger(MultiTenancyService.class.getName());
 
 	@PersistenceContext
 	EntityManager em;
@@ -174,14 +174,14 @@ public class MultiTenancyService {
 		MultiTenancyUser mu = em.merge(principal.getUser());
 		AuthenticationEvent ae = new AuthenticationEvent(mu, authenticated);
 
-		if (authenticated)
+		if (authenticated) {
+			LOG.finer("fire authentication successful event");
 			authenticationSuccessfulEvent.fire(ae);
-		else
+		} else {
+			LOG.finer("fire authentication failed event");
 			authenticationFailedEvent.fire(ae);
+		}
 
 		principal.mtu = mu;
-
-		System.out.println("nach fire");
-
 	}
 }
